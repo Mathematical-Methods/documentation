@@ -671,38 +671,20 @@ You'll add the `/dev/loop1` physical volume (PV) that was prepped and created ab
 
     !!! Question
 
-        Using your `vgdisplay` output, note down the changes on your system. What are the new values for "Free PE / Size"?  
-
-#### To remove a LV, VG and PV
-
-This section will step through how to delete the `/dev/loop1` PV that you assigned to the existing `rl` VG in the previous section.
-
-1. Remove the logical volume named scratch2. Type:
+        Using your `vgdisplay` output, note down the changes on your system. What are the new values for "Free PE / Size"?
+    
+5. To remove the new PV (/dev/loop1) from the existing `rl` volume group. Use the `vgreduce` command, type:
 
     ```bash
-    [root@localhost ~]# lvremove -f  /dev/rl/scratch2
-    Logical volume "scratch2" successfully removed.
+    [root@localhost ~]# vgreduce rl /dev/loop1
     ```
 
-2. Remove the scratch3 logical volume, by running:
+    **OUTPUT**
 
     ```bash
-    [root@localhost ~]# lvremove -f  /dev/rl/scratch3
+    Removed "/dev/loop1" from volume group "rl"
     ```
-
-3. With the relevant volumes now removed, you can now reduce the size of the `rl` VG to make it consistent. Type:
-
-    ```bash
-    [root@localhost ~]# vgreduce --removemissing  rl
-    ```
-
-4. Remove any LVM labels from the `/dev/loop1` PV. Type:
-
-    ```bash
-    [root@localhost ~]# pvremove /dev/loop1
-    Labels on physical volume "/dev/loop1" successfully wiped.
-    ```
-
+   
 #### To create a new volume group
 
 In this section, you will create a brand new standalone volume group named "scratch".  The scratch VG will get it's space entirely from the `/dev/loop1` pseudo block device.
@@ -788,6 +770,36 @@ With the additional free space we have been able to add to the `rl` volume group
     ```
 
 5. Use the `lvdisplay` command again to view the new LV.
+
+#### To remove a LV, VG and PV
+
+This section will step through how to delete the `/dev/loop1` PV that you assigned to the existing `rl` VG in the previous section.
+
+1. Remove the logical volume named scratch2. Type:
+
+    ```bash
+    [root@localhost ~]# lvremove -f  /dev/rl/scratch2
+    Logical volume "scratch2" successfully removed.
+    ```
+
+2. Remove the scratch3 logical volume, by running:
+
+    ```bash
+    [root@localhost ~]# lvremove -f  /dev/rl/scratch3
+    ```
+
+3. With the relevant volumes now removed, you can now reduce the size of the `rl` VG to make it consistent. Type:
+
+    ```bash
+    [root@localhost ~]# vgreduce --removemissing  rl
+    ```
+
+4. Remove any LVM labels from the `/dev/loop1` PV. Type:
+
+    ```bash
+    [root@localhost ~]# pvremove /dev/loop1
+    Labels on physical volume "/dev/loop1" successfully wiped.
+    ```
 
 ## Exercise 2
 
